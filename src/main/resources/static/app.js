@@ -27,6 +27,9 @@ function agregarAlListado() {
 
 function actualizarVistaPrevia() {
     elementos.preview.replaceChildren();
+    elementos.exportar.forEach(boton => {
+        boton.disabled = listadoDocumento.length === 0;
+    });
 
     listadoDocumento.forEach((item, index) => {
         const li = document.createElement("li");
