@@ -150,6 +150,11 @@ button:disabled {
     border-left: 6px solid #ccc;
 }
 
+.item-doc.selected {
+    outline: 2px solid #007bff;
+    outline-offset: 2px;
+}
+
 .item-content {
     flex-grow: 1;
     margin-right: 15px;
