@@ -9,7 +9,8 @@ const elementos = {
     preview: document.getElementById("preview"),
     importar: document.getElementById("importarArchivo"),
     agregar: document.getElementById("agregarAlListado"),
-    limpiar: document.getElementById("limpiarTodo")
+    limpiar: document.getElementById("limpiarTodo"),
+    exportar: document.querySelectorAll("[data-formato]")
 };
 
 function agregarAlListado() {
@@ -166,4 +167,7 @@ async function exportar(formato) {
 elementos.importar.addEventListener("click", importarArchivo);
 elementos.agregar.addEventListener("click", agregarAlListado);
 elementos.limpiar.addEventListener("click", limpiarTodo);
+elementos.exportar.forEach(boton => {
+    boton.addEventListener("click", () => exportar(boton.dataset.formato));
+});
 actualizarVistaPrevia();
