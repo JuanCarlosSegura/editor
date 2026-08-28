@@ -1,6 +1,7 @@
 package com.editordocument.editor.controller;
 
 import com.editordocument.editor.model.ElementoDocumento;
+import com.editordocument.editor.model.SolicitudExportacion;
 import com.editordocument.editor.service.DocumentoExportService;
 import com.editordocument.editor.util.DocumentoParser;
 import org.springframework.http.HttpHeaders;
@@ -53,19 +54,19 @@ public class DocumentoController {
     }
 
     @PostMapping("/exportar/txt")
-    public ResponseEntity<byte[]> exportarTxt(@RequestBody List<ElementoDocumento> estructura) {
-        return archivo(exportService.aTxt(estructura), NOMBRE_TXT, MediaType.TEXT_PLAIN);
+    public ResponseEntity<byte[]> exportarTxt(@RequestBody SolicitudExportacion solicitud) {
+        return archivo(exportService.aTxt(solicitud.getElementos(), solicitud.getConfiguracion()), NOMBRE_TXT, MediaType.TEXT_PLAIN);
     }
 
     @PostMapping("/exportar/docx")
-    public ResponseEntity<byte[]> exportarDocx(@RequestBody List<ElementoDocumento> estructura) throws IOException {
-        return archivo(exportService.aDocx(estructura), NOMBRE_DOCX,
+    public ResponseEntity<byte[]> exportarDocx(@RequestBody SolicitudExportacion solicitud) throws IOException {
+        return archivo(exportService.aDocx(solicitud.getElementos(), solicitud.getConfiguracion()), NOMBRE_DOCX,
                 MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.wordprocessingml.document"));
     }
 
     @PostMapping("/exportar/pdf")
-    public ResponseEntity<byte[]> exportarPdf(@RequestBody List<ElementoDocumento> estructura) {
-        return archivo(exportService.aPdf(estructura), NOMBRE_PDF, MediaType.APPLICATION_PDF);
+    public ResponseEntity<byte[]> exportarPdf(@RequestBody SolicitudExportacion solicitud) {
+        return archivo(exportService.aPdf(solicitud.getElementos(), solicitud.getConfiguracion()), NOMBRE_PDF, MediaType.APPLICATION_PDF);
     }
 
     private ResponseEntity<byte[]> archivo(byte[] contenido, String nombre, MediaType tipo) {

@@ -28,6 +28,20 @@
             <label for="texto">Contenido de Texto:</label>
             <textarea id="texto" rows="4" placeholder="Escribe el texto..."></textarea>
             <button id="agregarAlListado" class="btn-primary" type="button">Añadir a la Estructura</button>
+
+            <h2>3. Formato de listas</h2>
+            <label for="formato">Aplicar formato a:</label>
+            <select id="alcanceFormato">
+                <option value="DOCUMENTO">Todo el documento</option>
+                <option value="PRINCIPAL">Hijos de cada punto principal</option>
+                <option value="SECUNDARIO">Hijos de cada punto secundario</option>
+                <option value="TERCIARIO">Hijos de cada punto terciario</option>
+            </select>
+            <label for="formato">Separar por:</label>
+            <select id="formato">
+                <option value="NUMEROS">Números</option>
+                <option value="PUNTOS">Puntos</option>
+            </select>
         </section>
 
         <section class="panel panel-preview" aria-labelledby="estructura-titulo">

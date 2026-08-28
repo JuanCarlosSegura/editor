@@ -12,6 +12,8 @@ const elementos = {
     agregar: document.getElementById("agregarAlListado"),
     limpiar: document.getElementById("limpiarTodo"),
     exportar: document.querySelectorAll("[data-formato]")
+    , alcanceFormato: document.getElementById("alcanceFormato")
+    , formato: document.getElementById("formato")
 };
 
 function agregarAlListado() {
@@ -181,10 +183,15 @@ async function exportar(formato) {
     }
 
     try {
+        const alcance = elementos.alcanceFormato.value;
+        const configuracion = {
+            formato: alcance === "DOCUMENTO" ? elementos.formato.value : "NUMEROS",
+            formatosPorNivel: alcance === "DOCUMENTO" ? {} : { [alcance]: elementos.formato.value }
+        };
         const response = await fetch(`/api/documentos/exportar/${formato}`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(listadoDocumento)
+            body: JSON.stringify({ elementos: listadoDocumento, configuracion })
         });
         if (!response.ok) throw new Error("No se pudo exportar el documento.");
 
