@@ -1,6 +1,7 @@
 const NIVELES = ["PRINCIPAL", "SECUNDARIO", "TERCIARIO", "DESCRIPCION"];
 const FORMATOS = new Set(["txt", "docx", "pdf"]);
 let listadoDocumento = [];
+let indiceSeleccionado = null;
 
 const elementos = {
     fileInput: document.getElementById("fileInput"),
@@ -9,7 +10,8 @@ const elementos = {
     preview: document.getElementById("preview"),
     importar: document.getElementById("importarArchivo"),
     agregar: document.getElementById("agregarAlListado"),
-    limpiar: document.getElementById("limpiarTodo")
+    limpiar: document.getElementById("limpiarTodo"),
+    exportar: document.querySelectorAll("[data-formato]")
 };
 
 function agregarAlListado() {
@@ -19,17 +21,28 @@ function agregarAlListado() {
         return;
     }
 
-    listadoDocumento.push({ tipo: elementos.tipo.value, texto });
+    if (indiceSeleccionado === null) {
+        listadoDocumento.push({ tipo: elementos.tipo.value, texto });
+    } else {
+        listadoDocumento[indiceSeleccionado] = { tipo: elementos.tipo.value, texto };
+        indiceSeleccionado = null;
+        elementos.agregar.textContent = "Añadir a la Estructura";
+    }
     elementos.texto.value = "";
     actualizarVistaPrevia();
 }
 
 function actualizarVistaPrevia() {
     elementos.preview.replaceChildren();
+    elementos.exportar.forEach(boton => {
+        boton.disabled = listadoDocumento.length === 0;
+    });
 
     listadoDocumento.forEach((item, index) => {
         const li = document.createElement("li");
         li.className = `item-doc item-${item.tipo}`;
+        if (index === indiceSeleccionado) li.classList.add("selected");
+        li.addEventListener("click", () => seleccionarElemento(index));
 
         const contentDiv = document.createElement("div");
         contentDiv.className = "item-content";
@@ -53,7 +66,10 @@ function actualizarVistaPrevia() {
             button.type = "button";
             button.textContent = label;
             button.title = title;
-            button.addEventListener("click", action);
+            button.addEventListener("click", event => {
+                event.stopPropagation();
+                action();
+            });
             if (title === "Eliminar") button.className = "delete";
             actionsDiv.appendChild(button);
         });
@@ -61,6 +77,16 @@ function actualizarVistaPrevia() {
         li.append(contentDiv, actionsDiv);
         elementos.preview.appendChild(li);
     });
+}
+
+function seleccionarElemento(index) {
+    indiceSeleccionado = index;
+    const elemento = listadoDocumento[index];
+    elementos.tipo.value = elemento.tipo;
+    elementos.texto.value = elemento.texto;
+    elementos.agregar.textContent = "Guardar cambios";
+    actualizarVistaPrevia();
+    elementos.texto.focus();
 }
 
 function cambiarNivel(index, direccion) {
@@ -84,6 +110,12 @@ function cambiarNivel(index, direccion) {
 
 function eliminar(index) {
     listadoDocumento.splice(index, 1);
+    if (indiceSeleccionado === index) {
+        indiceSeleccionado = null;
+        elementos.agregar.textContent = "Añadir a la Estructura";
+    } else if (indiceSeleccionado > index) {
+        indiceSeleccionado--;
+    }
     actualizarVistaPrevia();
 }
 
@@ -99,6 +131,9 @@ function mover(index, direccion) {
 function limpiarTodo() {
     if (confirm("¿Vaciar la estructura actual?")) {
         listadoDocumento = [];
+        indiceSeleccionado = null;
+        elementos.agregar.textContent = "Añadir a la Estructura";
+        elementos.texto.value = "";
         actualizarVistaPrevia();
     }
 }
@@ -128,6 +163,8 @@ async function importarArchivo() {
         if (!response.ok) throw new Error("Error al procesar el archivo.");
 
         listadoDocumento = await response.json();
+        indiceSeleccionado = null;
+        elementos.agregar.textContent = "Añadir a la Estructura";
         elementos.fileInput.value = "";
         actualizarVistaPrevia();
     } catch (error) {
@@ -166,4 +203,7 @@ async function exportar(formato) {
 elementos.importar.addEventListener("click", importarArchivo);
 elementos.agregar.addEventListener("click", agregarAlListado);
 elementos.limpiar.addEventListener("click", limpiarTodo);
+elementos.exportar.forEach(boton => {
+    boton.addEventListener("click", () => exportar(boton.dataset.formato));
+});
 actualizarVistaPrevia();
