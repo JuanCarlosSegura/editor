@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Procesador Inteligente de Documentos</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <h1>Editor Dinámico y Formateador Estructurado</h1>
+
+    <main class="container">
+        <section class="panel panel-inputs" aria-labelledby="carga-titulo">
+            <h2 id="carga-titulo">1. Cargar Archivo</h2>
+            <label for="fileInput">Subir TXT o Word (.docx):</label>
+            <input type="file" id="fileInput" accept=".txt,.docx">
+            <button id="importarArchivo" class="btn-primary btn-upload" type="button">Cargar para Editar</button>
+
+            <h2>2. Añadir Nuevo Elemento</h2>
+            <label for="tipo">Nivel Jerárquico:</label>
+            <select id="tipo">
+                <option value="PRINCIPAL">Punto Principal (Título)</option>
+                <option value="SECUNDARIO">Punto Secundario (Subtítulo)</option>
+                <option value="TERCIARIO">Punto Terciario (Sub-subtítulo)</option>
+                <option value="DESCRIPCION">Descripción / Párrafo</option>
+            </select>
+
+            <label for="texto">Contenido de Texto:</label>
+            <textarea id="texto" rows="4" placeholder="Escribe el texto..."></textarea>
+            <button id="agregarAlListado" class="btn-primary" type="button">Añadir a la Estructura</button>
+        </section>
+
+        <section class="panel panel-preview" aria-labelledby="estructura-titulo">
+            <h2 id="estructura-titulo">Estructura del Documento (Editable en Tiempo Real)</h2>
+            <p class="preview-help">*Haz clic en el texto de cualquier bloque para editarlo. Usa las flechas para ordenar jerarquías.*</p>
+            <ul id="preview" class="preview-list"></ul>
+
+            <div class="export-actions">
+                <button class="btn-success" data-formato="txt" type="button">Descargar TXT</button>
+                <button class="btn-success btn-word" data-formato="docx" type="button">Descargar Word (DOCX)</button>
+                <button class="btn-success btn-pdf" data-formato="pdf" type="button">Descargar PDF</button>
+                <button id="limpiarTodo" class="btn-danger" type="button">Vaciar Todo</button>
+            </div>
+        </section>
+    </main>
+
+    <script src="app.js" defer></script>
+</body>
+</html>
